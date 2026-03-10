@@ -1,0 +1,13 @@
+{
+  "name": "ton-nft-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.66.0",
+    "@ton/ton": "^15.0.0",
+    "@ton/core": "^0.59.0"
+  }
+}
