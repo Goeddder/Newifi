@@ -19,7 +19,7 @@ bot.on('message', async (msg) => {
 
     if (nftAddress.length > 40) {
         // ЗАМЕНИ НА СВОЙ ДОМЕН ИЗ RAILWAY!
-        const domain = 'ВАШ_ДОМЕН_ИЗ_РАЙЛВЕЙ.up.railway.app'; 
+        const domain = 'https://newifi.onrender.com'; 
         const link = `https://${domain}?nft=${nftAddress}`;
         bot.sendMessage(msg.chat.id, `✅ Ссылка готова:\n${link}`);
     }
