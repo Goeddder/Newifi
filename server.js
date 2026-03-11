@@ -1,25 +1,33 @@
 const express = require('express');
 const { Telegraf } = require('telegraf');
-const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 
+// Обработчики фатальных ошибок (чтобы видеть причину падения)
+process.on('uncaughtException', (err) => {
+    console.error('❌ Uncaught Exception:', err);
+    process.exit(1);
+});
+process.on('unhandledRejection', (reason) => {
+    console.error('❌ Unhandled Rejection:', reason);
+});
+
 // ========== Конфигурация ==========
 const BOT_TOKEN = '7759520200:AAGuQ8lQxWdb-4HEJJr9Y9SPZxcFT-OLero';
-const ADMIN_ID = 1471307057;  // твой Telegram ID
+const ADMIN_ID = 1471307057;
 const DATA_FILE = path.join(__dirname, 'users.json');
+const BASE_URL = process.env.RENDER_EXTERNAL_URL || 'https://newifi.onrender.com';
 // ==================================
 
-// Инициализация бота и приложения
 const bot = new Telegraf(BOT_TOKEN);
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, './'))); // для отдачи index.html
+app.use(express.static(path.join(__dirname, './'))); // отдаём index.html
 
-// ========== Работа с данными (JSON) ==========
+// ========== Работа с JSON базой ==========
 function loadData() {
     try {
         if (fs.existsSync(DATA_FILE)) {
@@ -29,7 +37,7 @@ function loadData() {
     } catch (e) {
         console.error('Ошибка загрузки данных:', e);
     }
-    return { users: [] };  // структура: { users: [ { telegramId, username, nfts: [...] } ] }
+    return { users: [] };
 }
 
 function saveData(data) {
@@ -40,7 +48,6 @@ function saveData(data) {
     }
 }
 
-// Найти пользователя по telegramId или username
 function findUser(telegramId, username) {
     const data = loadData();
     let user = data.users.find(u => u.telegramId === telegramId);
@@ -49,22 +56,7 @@ function findUser(telegramId, username) {
     }
     return { data, user };
 }
-
-// Создать или обновить пользователя
-function updateUser(telegramId, username, nft) {
-    const { data, user } = findUser(telegramId, username);
-    if (user) {
-        user.nfts.push(nft);
-    } else {
-        data.users.push({
-            telegramId,
-            username,
-            nfts: [nft]
-        });
-    }
-    saveData(data);
-}
-// =============================================
+// ==========================================
 
 // ========== Парсинг NFT с getgems.io ==========
 async function parseNFT(url) {
@@ -75,12 +67,9 @@ async function parseNFT(url) {
         const html = await response.text();
         const $ = cheerio.load(html);
         
-        // Пробуем вытащить мета-теги
         const title = $('meta[property="og:title"]').attr('content') || 'NFT';
         const image = $('meta[property="og:image"]').attr('content') || '';
         const description = $('meta[property="og:description"]').attr('content') || '';
-        
-        // Если не нашли, пробуем другие селекторы (для getgems)
         const nftId = url.split('/').pop() || Date.now().toString();
         
         return {
@@ -89,7 +78,7 @@ async function parseNFT(url) {
             description,
             imageUrl: image,
             externalUrl: url,
-            status: 'inventory'  // inventory, sent, blocked
+            status: 'inventory'
         };
     } catch (e) {
         console.error('Ошибка парсинга NFT:', e);
@@ -106,18 +95,16 @@ async function parseNFT(url) {
 // ===============================================
 
 // ========== Команды бота ==========
-// Старт – отправляет кнопку с Mini App
 bot.start((ctx) => {
     ctx.reply('🎁 Твой инвентарь NFT. Нажимай кнопку, чтобы открыть:', {
         reply_markup: {
             inline_keyboard: [
-                [{ text: '📦 Открыть инвентарь', web_app: { url: 'https://newifi.onrender.com/' + process.env.RENDER_EXTERNAL_URL || 'твой-сайт.com' + '/app' } }]
+                [{ text: '📦 Открыть инвентарь', web_app: { url: `${BASE_URL}/app` } }]
             ]
         }
     });
 });
 
-// Админская команда /addnft @username ссылка
 bot.command('addnft', async (ctx) => {
     if (ctx.from.id !== ADMIN_ID) {
         return ctx.reply('Ты не админ.');
@@ -129,18 +116,13 @@ bot.command('addnft', async (ctx) => {
     const username = args[1].replace('@', '');
     const nftUrl = args[2];
 
-    // Парсим NFT
     const nftData = await parseNFT(nftUrl);
-    
-    // Сохраняем пользователю
-    // Временно telegramId не знаем, найдём по username при первом заходе в Mini App
     const { data, user } = findUser(null, username);
     if (user) {
         user.nfts.push(nftData);
         saveData(data);
         ctx.reply(`✅ NFT добавлен пользователю @${username}`);
     } else {
-        // Создаём запись без telegramId, позже привяжется
         data.users.push({
             telegramId: null,
             username,
@@ -151,7 +133,6 @@ bot.command('addnft', async (ctx) => {
     }
 });
 
-// Команда для просмотра всех пользователей (админ)
 bot.command('users', (ctx) => {
     if (ctx.from.id !== ADMIN_ID) return;
     const data = loadData();
@@ -166,11 +147,8 @@ bot.launch();
 console.log('Бот запущен');
 // ==================================
 
-// ========== API для Mini App ==========
-// Верификация initData (упрощённая)
+// ========== Верификация initData (упрощённая) ==========
 function verifyTelegramData(initData) {
-    // В реальности нужно проверять подпись с токеном бота.
-    // Для простоты парсим и извлекаем user
     const params = new URLSearchParams(initData);
     const userStr = params.get('user');
     if (userStr) {
@@ -180,8 +158,9 @@ function verifyTelegramData(initData) {
     }
     return null;
 }
+// =======================================================
 
-// Получить данные пользователя по initData
+// ========== API для Mini App ==========
 app.post('/api/user', (req, res) => {
     const { initData } = req.body;
     const userData = verifyTelegramData(initData);
@@ -193,13 +172,11 @@ app.post('/api/user', (req, res) => {
 
     const { data, user } = findUser(telegramId, username);
     
-    // Если пользователь найден по username, но без telegramId, обновляем telegramId
     if (user && !user.telegramId) {
         user.telegramId = telegramId;
         saveData(data);
     }
     
-    // Если пользователя нет вообще – создаём
     if (!user) {
         data.users.push({
             telegramId,
@@ -209,12 +186,10 @@ app.post('/api/user', (req, res) => {
         saveData(data);
     }
     
-    // Возвращаем NFT со статусом inventory (отдаём только те, что в инвентаре)
     const currentUser = data.users.find(u => u.telegramId === telegramId);
     res.json({ nfts: currentUser ? currentUser.nfts.filter(n => n.status === 'inventory') : [] });
 });
 
-// Отправка NFT (смена статуса на sent)
 app.post('/api/send', (req, res) => {
     const { nftId, initData } = req.body;
     const userData = verifyTelegramData(initData);
