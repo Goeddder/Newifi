@@ -111,7 +111,7 @@ bot.start((ctx) => {
     ctx.reply('🎁 Твой инвентарь NFT. Нажимай кнопку, чтобы открыть:', {
         reply_markup: {
             inline_keyboard: [
-                [{ text: '📦 Открыть инвентарь', web_app: { url: 'https://' + process.env.RENDER_EXTERNAL_URL || 'твой-сайт.com' + '/app' } }]
+                [{ text: '📦 Открыть инвентарь', web_app: { url: 'https://newifi.onrender.com/' + process.env.RENDER_EXTERNAL_URL || 'твой-сайт.com' + '/app' } }]
             ]
         }
     });
